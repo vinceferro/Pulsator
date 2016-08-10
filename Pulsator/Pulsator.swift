@@ -14,11 +14,11 @@ import QuartzCore.QuartzCore
 internal let kPulsatorAnimationKey = "pulsator"
 
 public class Pulsator: CAReplicatorLayer {
-
+    
     private let pulse = CALayer()
     private var animationGroup: CAAnimationGroup!
     private var alpha: CGFloat = 0.45
-
+    
     override public var backgroundColor: CGColor? {
         didSet {
             pulse.backgroundColor = backgroundColor
@@ -39,7 +39,7 @@ public class Pulsator: CAReplicatorLayer {
     }
     
     // MARK: - Public Properties
-
+    
     /// The number of pulse.
     public var numPulse: Int = 1 {
         didSet {
@@ -98,10 +98,10 @@ public class Pulsator: CAReplicatorLayer {
             }
         }
     }
-
+    
     
     // MARK: - Initializer
-
+    
     override public init() {
         super.init()
         
@@ -112,10 +112,6 @@ public class Pulsator: CAReplicatorLayer {
         backgroundColor = UIColor(
             red: 0, green: 0.455, blue: 0.756, alpha: 0.45).CGColor
         
-        NSNotificationCenter.defaultCenter().addObserver(self,
-                                                         selector: #selector(recreate),
-                                                         name: UIApplicationDidBecomeActiveNotification,
-                                                         object: nil)
     }
     
     override public init(layer: AnyObject) {
@@ -154,6 +150,7 @@ public class Pulsator: CAReplicatorLayer {
         animationGroup.animations = [scaleAnimation, opacityAnimation]
         animationGroup.duration = animationDuration + pulseInterval
         animationGroup.repeatCount = repeatCount
+        animationGroup.removedOnCompletion = false
         if let timingFunction = timingFunction {
             animationGroup.timingFunction = timingFunction
         }
@@ -198,15 +195,7 @@ public class Pulsator: CAReplicatorLayer {
     public func stop() {
         pulse.removeAllAnimations()
         animationGroup = nil
-    }
-    
-    
-    // MARK: - Delegate methods for CAAnimation
-    
-    override public func animationDidStop(anim: CAAnimation, finished flag: Bool) {
-        if pulse.animationKeys()?.count > 0 {
-            pulse.removeAllAnimations()
-        }
+        
         pulse.removeFromSuperlayer()
         
         if autoRemove {
