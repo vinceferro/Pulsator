@@ -9,7 +9,7 @@
 
 
 import UIKit
-import QuartzCore.QuartzCore
+import QuartzCore
 
 internal let kPulsatorAnimationKey = "pulsator"
 
@@ -23,7 +23,8 @@ public class Pulsator: CAReplicatorLayer {
         didSet {
             pulse.backgroundColor = backgroundColor
             let oldAlpha = alpha
-            alpha = CGColorGetAlpha(backgroundColor)
+            guard let newColor = backgroundColor else { return }
+            alpha = backgroundColor == nil ? CGColorGetAlpha(backgroundColor)
             if alpha != oldAlpha {
                 recreate()
             }
@@ -122,10 +123,6 @@ public class Pulsator: CAReplicatorLayer {
         fatalError("init(coder:) has not been implemented")
     }
     
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
-    
     // MARK: - Private Methods
     
     private func setupPulse() {
@@ -154,7 +151,6 @@ public class Pulsator: CAReplicatorLayer {
         if let timingFunction = timingFunction {
             animationGroup.timingFunction = timingFunction
         }
-        animationGroup.delegate = self
     }
     
     private func updatePulse() {
