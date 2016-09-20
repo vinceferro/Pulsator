@@ -24,7 +24,7 @@ public class Pulsator: CAReplicatorLayer {
             pulse.backgroundColor = backgroundColor
             let oldAlpha = alpha
             guard let newColor = backgroundColor else { return }
-            alpha = backgroundColor == nil ? CGColorGetAlpha(backgroundColor)
+            alpha = CGColorGetAlpha(newColor)
             if alpha != oldAlpha {
                 recreate()
             }
